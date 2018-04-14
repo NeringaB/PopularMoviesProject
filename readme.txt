@@ -1,0 +1,1 @@
+Icon for Popular Movies app launcher and notification icon is taken from https://www.iconfinder.com

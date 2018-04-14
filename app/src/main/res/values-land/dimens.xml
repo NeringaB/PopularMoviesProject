@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="poster_columns">4</integer>
+
+    <!-- Dimens for MainActivity -->
+    <dimen name="app_bar_height">300dp</dimen>
+
+    <dimen name="movie_poster_height">240dp</dimen>
+
+    <dimen name="iv_movie_poster_width">150dp</dimen>
+
+    <dimen name="iv_movie_poster_height">240dp</dimen>
+
+
+    <dimen name="powered_by_height_and_width">120dp</dimen>
+
+    <dimen name="margin_top">8dp</dimen>
+
+    <dimen name="margin_bottom">24dp</dimen>
+
+    <dimen name="progress_bar_width">140dp</dimen>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Label ordering must match values -->
+    <array name="pref_show_movies_option_labels">
+        <item>@string/pref_show_movies_label_popular</item>
+        <item>@string/pref_show_movies_label_top_rated</item>
+        <item>@string/pref_show_movies_label_favourite</item>
+    </array>
+
+    <array name="pref_show_movies_option_values">
+        <item>@string/pref_show_movies_popular_value</item>
+        <item>@string/pref_show_movies_top_rated_value</item>
+        <item>@string/pref_show_movies_favourite_value</item>
+    </array>
+</resources>

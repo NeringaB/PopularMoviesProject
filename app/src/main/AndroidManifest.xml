@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tioliaapp.android.tioliamovies"
+    android:installLocation="preferExternal">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:launchMode="singleTop"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <!-- PoweredByActivity (to contribute to Popular Movie Db) -->
+        <activity android:name="com.tioliaapp.android.tioliamovies.PoweredByActivity"
+            android:theme="@style/NoActionBarTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- MainActivity -->
+        <activity android:name="com.tioliaapp.android.tioliamovies.MainActivity">
+        </activity>
+
+        <!-- DetailActivity -->
+        <activity
+            android:name="com.tioliaapp.android.tioliamovies.DetailActivity"
+            android:parentActivityName="com.tioliaapp.android.tioliamovies.MainActivity"
+            android:theme="@style/NoActionBarTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.tioliaapp.android.tioliamovies.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.tioliaapp.android.tioliamovies.SettingsActivity"
+            android:label="@string/title_activity_settings" />
+
+        <!-- This is ContentProvider -->
+        <provider
+            android:name="com.tioliaapp.android.tioliamovies.data.MovieProvider"
+            android:authorities="@string/content_authority"
+            android:exported="false" />
+
+        <!-- This is required for immediate syncs -->
+        <service
+            android:name="com.tioliaapp.android.tioliamovies.sync.MovieDataSyncIntentService"
+            android:exported="false" />
+
+        <!-- This is the Service declaration used in conjunction with FirebaseJobDispatcher -->
+        <service
+            android:name="com.tioliaapp.android.tioliamovies.sync.MovieDataFirebaseJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
+
+    </application>
+
+</manifest>

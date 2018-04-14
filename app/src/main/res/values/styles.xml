@@ -1,0 +1,34 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Used for settings preference theme -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="actionBarStyle">@style/ActionBar.Solid.NoTitle</item>
+    </style>
+
+    <style name="ActionBar.Solid.NoTitle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="displayOptions">showHome|useLogo</item>
+        <item name="logo">@drawable/ic_logo</item>
+    </style>
+
+    <!-- The theme for the DetailActivity without action bar
+         because custom collapsing toolbar will be set as the action bar for this Activity.
+         It is also used for the PoweredByActivity -->
+    <style name="NoActionBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- Progress bar style in the PoweredByActivity -->
+    <style name="LinearProgress" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="colorAccent">@android:color/black</item>
+        <item name="android:background">#F8BBD0</item>
+    </style>
+</resources>

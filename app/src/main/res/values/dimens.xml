@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Dimens for MainActivity -->
+    <integer name="poster_columns">2</integer>
+
+    <dimen name="layout_margin">16dp</dimen>
+
+    <dimen name="movie_poster_height">300dp</dimen>
+
+    <dimen name="circular_progress_bar_width_and_height">42dp</dimen>
+
+    <dimen name="error_text_size">20sp</dimen>
+
+    <!-- Dimens for DetailActivity -->
+    <dimen name="app_bar_height">200dp</dimen>
+
+    <dimen name="tv_movie_title_height">100dp</dimen>
+
+    <dimen name="layout_margin_8">8dp</dimen>
+
+    <dimen name="layout_margin_16">16dp</dimen>
+
+    <dimen name="layout_margin_24">24dp</dimen>
+
+    <dimen name="layout_margin_32">32dp</dimen>
+
+    <dimen name="layout_margin_48">48dp</dimen>
+
+    <dimen name="movie_title_text_size">28sp</dimen>
+
+    <dimen name="iv_movie_poster_width">150dp</dimen>
+
+    <dimen name="iv_movie_poster_height">240dp</dimen>
+
+    <dimen name="movie_release_date_text_size">22sp</dimen>
+
+    <dimen name="movie_rating_text_size">18sp</dimen>
+
+    <dimen name="ib_favorite_button_width_and_height">60dp</dimen>
+
+    <dimen name="ib_play_arrow_with_and_height">48dp</dimen>
+
+
+    <dimen name="powered_by_height_and_width">140dp</dimen>
+
+    <dimen name="margin_top">56dp</dimen>
+
+    <dimen name="margin_bottom">40dp</dimen>
+
+    <dimen name="progress_bar_width">160dp</dimen>
+</resources>
