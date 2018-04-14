@@ -21,6 +21,7 @@ Landscape
 ![Screenshot](screenshots/Screenshot_5.png)
 ![Screenshot](screenshots/Screenshot_6.png)
 ![Screenshot](screenshots/Screenshot_7.png)
+![Screenshot](screenshots/Screenshot_8.png)
 
 Description:
 
