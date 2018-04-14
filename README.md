@@ -4,6 +4,9 @@ Popular Movies App - Android Development Nanodegree by Google (project 1 and 2)
 
 Popular Movies project is a part of Android Development Nanodegree by Google.
 
+NOTE: If you run this project on your phone or emulator, you should insert your 
+Movie Database API key in the NetworkUtils.java
+
 It was later renamed to Tiolia Movies and it may downloaded on Google Play here:
 https://play.google.com/store/apps/details?id=com.tioliaapp.android.tioliamovies
 
