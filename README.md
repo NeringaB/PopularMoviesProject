@@ -1,6 +1,6 @@
 # PopularMoviesProject
 
-Popular Movies App - Android Development Nanodegree by Google (project 1 and 2)
+Popular Movies App - Android Development Nanodegree by Google (Project 1 and 2)
 
 Popular Movies project is a part of Android Development Nanodegree by Google.
 
