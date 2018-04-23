@@ -22,6 +22,8 @@ public final class NetworkUtils {
     // API key param required to query Movie Db
     final static String API_PARAM = "api_key";
 
+    private static final String TAG = NetworkUtils.class.getSimpleName();
+
     // Uri to query popular movies:
     // http://api.themoviedb.org/3/movie/popular?api_key=apiKey
     //
@@ -33,12 +35,14 @@ public final class NetworkUtils {
     //
     // Uri to query movie reviews:
     // https://api.themoviedb.org/3/movie/245891/reviews?api_key=apiKey
-    private static final String TAG = NetworkUtils.class.getSimpleName();
-    // Bse URIs to query popular and top rated movies
+
+    // Base URIs to query popular and top rated movies
     private static final String BASE_URL_POPULAR = "http://api.themoviedb.org/3/movie/popular?";
     private static final String BASE_URL_TOP_RATED = "http://api.themoviedb.org/3/movie/top_rated?";
+
     // Base URI to query movie videos and reviews
-    private static final String BASE_URL_MOVIE_VIDEOS_AND_REVIEWS = "https://api.themoviedb.org/3/movie/";
+    private static final String BASE_URL_MOVIE_VIDEOS_AND_REVIEWS =
+            "https://api.themoviedb.org/3/movie/";
 
     // Retrieves the proper URL to query popular movies data
     public static URL getPopularMoviesUrl() {

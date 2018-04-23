@@ -33,7 +33,7 @@ public class NotificationUtils {
     };
 
     // Indices of the values in the array of Strings above to more quickly be able
-    // to access the data from thr query. If the order of the Strings above changes, these
+    // to access the data from their query. If the order of the Strings above changes, these
     // indices must be adjusted to match the order of the Strings.
     public static final int INDEX_MOVIE_ID = 0;
     public static final int INDEX_MOVIE_TITLE = 1;
@@ -97,11 +97,11 @@ public class NotificationUtils {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
                 // If it is, creates new notification channel for the most popular movie notification
-                NotificationChannel mChannel = new NotificationChannel(
+                NotificationChannel channel = new NotificationChannel(
                         POPULAR_MOVIE_NOTIFICATION_CHANNEL_ID,
                         context.getString(R.string.main_notification_channel_name),
                         NotificationManager.IMPORTANCE_HIGH);
-                notificationManager.createNotificationChannel(mChannel);
+                notificationManager.createNotificationChannel(channel);
             }
 
             try {

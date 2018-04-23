@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
 public class DetailActivity extends AppCompatActivity {
 
     // Indices of the values in the array of projection used in the loader
-    // below to more quickly be able to access the data from the query.
+    // below to be able to access the data from the query more quickly.
     public static final int INDEX_MOVIE_ID = 0;
     public static final int INDEX_MOVIE_TITLE = 1;
     public static final int INDEX_MOVIE_POSTER_PATH = 2;
@@ -46,6 +46,7 @@ public class DetailActivity extends AppCompatActivity {
     public static final int INDEX_MOVIE_OVERVIEW = 4;
     public static final int INDEX_MOVIE_RATING = 5;
     public static final int INDEX_MOVIE_RELEASE_DATE = 6;
+
     // In this Activity, the user can share the selected movie's information
     // and suggest to check the movie on the Popular Movies app.
     // Hashtag is used to reference the app.
@@ -59,28 +60,36 @@ public class DetailActivity extends AppCompatActivity {
     private static final int ID_MOVIE_REVIEWS_DATA_LOADER = 13;
 
     private final String TAG = DetailActivity.class.getSimpleName();
+
+    // Finds the Toolbar
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    // Finds the ImageView of the CollapsingToolbar
     @BindView(R.id.iv_toolbar_image)
     ImageView toolbarImage;
+    // Finds RecyclerView
     @BindView(R.id.recyclerview)
     RecyclerView recyclerView;
+    // Finds ProgressBar
     @BindView(R.id.pb_loading_indicator)
     ProgressBar loadingIndicator;
+    // Finds CoordinatorLayout for the SnackBar
+    @BindView(R.id.coordinatorLayout)
+    CoordinatorLayout coordinatorLayout;
+
     String movieTitle;
     String movieReleaseDate;
     double movieRating;
     String movieBackdropPath;
     Parcelable layoutManagerSavedState;
-    @BindView(R.id.coordinatorLayout)
-    CoordinatorLayout coordinatorLayout;
+
     private DetailAdapter detailAdapter;
     private int currentMovieId;
     private List<Video> videos;
     private List<Review> reviews;
     private String movieSummary;
 
-    int videosListCount;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,9 +97,11 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
 
-        // Get the intent that started DetailActivity
+        context = getApplicationContext();
+
+        // Gets the intent that started DetailActivity
         Intent intentThatStartedThisActivity = getIntent();
-        // Get information passed with the intent
+        // Checks if the intent is not null
         if (intentThatStartedThisActivity != null) {
             // Checks if the intent has extra with the key "movieId"
             if (intentThatStartedThisActivity.hasExtra("movieId")) {
@@ -100,45 +111,63 @@ public class DetailActivity extends AppCompatActivity {
             }
         }
 
+        // Set CollapsingToolbar as the action bar
         setSupportActionBar(toolbar);
+        // Get the action bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        // Do not show title
         actionBar.setDisplayShowTitleEnabled(false);
 
         detailAdapter = new DetailAdapter(this, videos, reviews, coordinatorLayout);
 
-        videosListCount = detailAdapter.getVideosCount();
-
+        // Gets device orientation
         int orientation = getResources().getConfiguration().orientation;
-
+        // If device is in portrait orientation
         if (orientation == 1) {
+
+            // Creates LinearLayoutManager
             LinearLayoutManager layoutManager = new LinearLayoutManager(this,
                     LinearLayoutManager.VERTICAL, false);
+            // Sets LinearLayoutManager
             recyclerView.setLayoutManager(layoutManager);
+
+            // If device is in landscape orientation
         } else {
-            GridLayoutManager layoutManager = new GridLayoutManager(this,
-                    2);
+
+            // Create GridLayoutManager
+            GridLayoutManager layoutManager =
+                    new GridLayoutManager(this, 2);
+
+            // Gets how many columns an item has to span
             layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
+
+                    // Get view type
                     switch(detailAdapter.getItemViewType(position)) {
+                        // If the view is of VIEW_TYPE_MOVIE_DETAILS, it has to span two columns
                         case 0:
                             return 2;
+                        // If the view is of VIEW_TYPE_MOVIE_VIDEOS, it has to span one column
                         case 1:
                             return 1;
+                        // If the view is of VIEW_TYPE_MOVIE_REVIEWS, it has to span two columns
                         case 2:
                             return 2;
                         default:
-                            return 1;
+                            return 2;
                     }
-
                 }
             });
+
+            // Sets GridLayoutManager
             recyclerView.setLayoutManager(layoutManager);
         }
 
         recyclerView.setAdapter(detailAdapter);
 
+        // Informs the user that the data is being loaded
         showLoading();
 
         // Initializes movie details loader
@@ -160,6 +189,7 @@ public class DetailActivity extends AppCompatActivity {
 
         @Override
         public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
             // Converts movie ID to string.
             // It comes from the intent that opened DetailActivity
             String movieIdString = String.valueOf(currentMovieId);
@@ -177,14 +207,13 @@ public class DetailActivity extends AppCompatActivity {
             // Uses movie ID to query data for the movie that is currently showed
             String[] selectionArgs = new String[]{movieIdString};
 
-            Context context = getBaseContext();
-
             // Gets the user's show movies preference key value which is used to decide
             // which movies to show (popular, top rated or favourite)
             String showMoviesValue = Preferences.getUserShowMoviesChoice(context);
 
-            // Checks if the user selected popular or top rated movies
-            if (showMoviesValue.equals(context.getString(R.string.pref_show_movies_popular_value))) {
+            // Checks if the user selected popular movies
+            if (showMoviesValue.equals(context
+                    .getString(R.string.pref_show_movies_popular_value))) {
 
                 // User selected popular movies
                 // Creates uri for popular movies table
@@ -201,7 +230,8 @@ public class DetailActivity extends AppCompatActivity {
                         PopularMovieEntry.COLUMN_MOVIE_RELEASE_DATE,
                 };
 
-            } else if (showMoviesValue.equals(context.getString(R.string.pref_show_movies_top_rated_value))) {
+            } else if (showMoviesValue.equals(context
+                    .getString(R.string.pref_show_movies_top_rated_value))) {
 
                 // User selected top rated movies
                 // Creates uri for top rated movies table
@@ -218,7 +248,8 @@ public class DetailActivity extends AppCompatActivity {
                         TopRatedMovieEntry.COLUMN_MOVIE_RELEASE_DATE,
                 };
 
-            } else if (showMoviesValue.equals(context.getString(R.string.pref_show_movies_favourite_value))) {
+            } else if (showMoviesValue.equals(context
+                    .getString(R.string.pref_show_movies_favourite_value))) {
 
                 // User selected favourite movies
                 // Creates uri for favourite movies table
@@ -247,18 +278,21 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             if (data != null) {
+
                 // Shows the data from the cursor in the DetailActivity
                 detailAdapter.swapCursor(data);
                 // Gets the position of the LayoutManager
                 recyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerSavedState);
 
-                // Checks if cursor is not null and is not empty
+                // Checks if cursor is not empty
                 if (data.getCount() != 0) {
-                    // Shows RecyclerView
+
+                    // Shows movies
                     showMovieDataView();
+
                     // Moves cursor to first row
                     data.moveToFirst();
-                    // If it is not, get the data for a specific movie
+                    // Gets the data for a specific movie
                     // to create movie summary for the share intent
                     movieTitle = data.getString(INDEX_MOVIE_TITLE);
                     movieRating = data.getDouble(INDEX_MOVIE_RATING);
@@ -272,6 +306,7 @@ public class DetailActivity extends AppCompatActivity {
                     int orientation = getResources().getConfiguration().orientation;
                     // Initializes baseUri for the complete image path
                     String baseUri;
+
                     // Checks what is the current orientation
                     if (orientation == 1) {
                         // If it is portrait, uses baseUri for w780 image
@@ -280,6 +315,7 @@ public class DetailActivity extends AppCompatActivity {
                         // If it s landscape, uses baseUri for w1280 image
                         baseUri = "http://image.tmdb.org/t/p/w1280/";
                     }
+
                     // Creates the complete movie backdrop path
                     String completeMovieBackdropPath = baseUri + movieBackdropPath;
                     // Loads the image into the toolbarImage
@@ -304,49 +340,73 @@ public class DetailActivity extends AppCompatActivity {
             detailAdapter.swapCursor(null);
         }
     };
-    // Loader Callbacks listener for movie videos
+
+    // LoaderCallbacks listener for movie videos
     private LoaderManager.LoaderCallbacks<List<Video>> movieVideosLoaderListener
             = new LoaderManager.LoaderCallbacks<List<Video>>() {
 
         @Override
         public Loader<List<Video>> onCreateLoader(int i, Bundle bundle) {
+
+            // Converts current movie ID to string.
             String movieIdString = String.valueOf(currentMovieId);
-            return new MovieVideoLoader(getApplicationContext(), movieIdString);
+            // Creates new MovieVideoLoader,
+            // which uses current movie ID to query data for the movie that is currently showed
+            return new MovieVideoLoader(context, movieIdString);
         }
 
         @Override
         public void onLoadFinished(Loader<List<Video>> loader, List<Video> data) {
+
+            // Checks if a list of videos is not null
             if (data != null) {
+
+                // Sets movie data
                 detailAdapter.setMovieVideos(data);
+                // Restores the state of the LayoutManager
                 recyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerSavedState);
             }
         }
 
         @Override
         public void onLoaderReset(Loader<List<Video>> loader) {
+            // Since this loader's data is now invalid,
+            // clears the adapter that is displaying the data.
             detailAdapter.setMovieVideos(null);
         }
     };
+
     // Loader Callbacks listener for movie reviews
     private LoaderManager.LoaderCallbacks<List<Review>> movieReviewsLoaderListener
             = new LoaderManager.LoaderCallbacks<List<Review>>() {
 
         @Override
         public Loader<List<Review>> onCreateLoader(int i, Bundle bundle) {
+
+            // Converts current movie ID to string.
             String movieIdString = String.valueOf(currentMovieId);
+            // Creates new MovieReviewLoader,
+            // which uses current movie ID to query data for the movie that is currently showed
             return new MovieReviewLoader(getApplicationContext(), movieIdString);
         }
 
         @Override
         public void onLoadFinished(Loader<List<Review>> loader, List<Review> data) {
+
+            // Checks if a list of reviews is not null
             if (data != null) {
+
+                // Sets review data
                 detailAdapter.setMovieReviews(data);
+                // Restores the state of the LayoutManager
                 recyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerSavedState);
             }
         }
 
         @Override
         public void onLoaderReset(Loader<List<Review>> loader) {
+            // Since this loader's data is now invalid,
+            // clears the adapter that is displaying the data.
             detailAdapter.setMovieReviews(null);
         }
     };
@@ -382,6 +442,7 @@ public class DetailActivity extends AppCompatActivity {
 
     // Uses the ShareCompat Intent builder to create movie data intent for sharing.
     private Intent createShareMovieIntent() {
+
         // Formats the movie that is currently opened release date and rating
         String formattedMovieReleaseDate = movieReleaseDate.substring(0, 4);
         String movieRatingString = String.valueOf(movieRating) + "/10";
@@ -405,7 +466,7 @@ public class DetailActivity extends AppCompatActivity {
         recyclerView.setVisibility(View.VISIBLE);
     }
 
-    // Hides the movie data invisible and makes the loading indicator visible
+    // Hides the movie data and makes the loading indicator visible
     private void showLoading() {
         // Firstly, makes sure the movie data is invisible
         recyclerView.setVisibility(View.INVISIBLE);
@@ -415,6 +476,7 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        // Saves the state of the LayoutManager
         outState.putParcelable("RecyclerViewLayoutManager",
                 recyclerView.getLayoutManager().onSaveInstanceState());
         super.onSaveInstanceState(outState);
@@ -423,7 +485,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle state) {
         if (state != null) {
-            // Restores the `state of the LayoutManager
+            // Restores the state of the LayoutManager
             layoutManagerSavedState = ((Bundle) state)
                     .getParcelable("RecyclerViewLayoutManager");
         }

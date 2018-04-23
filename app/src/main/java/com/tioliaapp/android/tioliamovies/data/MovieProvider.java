@@ -84,6 +84,7 @@ public class MovieProvider extends ContentProvider {
             // content://com.example.android.tioliamovies/popular,
             // returns a cursor that contains every row of popular movie data in the table
             case CODE_POPULAR_MOVIES: {
+
                 returnedCursor = openHelper.getReadableDatabase().query(
                         PopularMovieEntry.TABLE_NAME,
                         projection,
@@ -100,6 +101,7 @@ public class MovieProvider extends ContentProvider {
             // content://com.example.android.tioliamovies/topRated,
             // return a cursor that contains every row of top rated movie data in the table
             case CODE_TOP_RATED_MOVIES: {
+
                 returnedCursor = openHelper.getReadableDatabase().query(
                         TopRatedMovieEntry.TABLE_NAME,
                         projection,
@@ -116,6 +118,7 @@ public class MovieProvider extends ContentProvider {
             // content://com.example.android.tioliamovies/favourites,
             // returns a cursor that contains every row of favourite movie data in the table
             case CODE_FAVOURITE_MOVIES: {
+
                 returnedCursor = openHelper.getReadableDatabase().query(
                         FavouriteMovieEntry.TABLE_NAME,
                         projection,

@@ -4,8 +4,8 @@ import android.app.IntentService;
 import android.content.Intent;
 
 /**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
+ * An {@link IntentService} subclass for handling asynchronous
+ * task requests in a service on a separate handler thread.
  */
 public class MovieDataSyncIntentService extends IntentService {
 
@@ -15,6 +15,6 @@ public class MovieDataSyncIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        com.tioliaapp.android.tioliamovies.sync.MovieDataSyncTask.syncMovieData(this);
+        MovieDataSyncTask.syncMovieData(this);
     }
 }

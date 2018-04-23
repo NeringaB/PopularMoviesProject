@@ -23,36 +23,40 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private final Context context;
 
     // An on-click handler that makes it easy for an Activity to interface with the RecyclerView.
-    private final MovieAdapterOnClickHandler mClickHandler;
-    private Cursor mCursor;
+    private final MovieAdapterOnClickHandler clickHandler;
+
+    private Cursor cursor;
 
     // Creates a MovieAdapter.
     public MovieAdapter(@NonNull Context context, MovieAdapterOnClickHandler clickHandler) {
         this.context = context;
-        mClickHandler = clickHandler;
+        this.clickHandler = clickHandler;
     }
 
     // This gets called when each new ViewHolder is created.
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        Context context = viewGroup.getContext();
-        int layoutIdForListItem = R.layout.movie_item;
-        LayoutInflater inflater = LayoutInflater.from(context);
-        boolean shouldAttachToParentImmediately = false;
 
-        View view = inflater.inflate(layoutIdForListItem, viewGroup, shouldAttachToParentImmediately);
+        // Gets layout ID for list item
+        int layoutIdForListItem = R.layout.movie_item;
+        // Gets LayoutInflater
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        View view = inflater.inflate(layoutIdForListItem, viewGroup, false);
+
         return new MovieAdapterViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder movieAdapterViewHolder, int position) {
-        mCursor.moveToPosition(position);
 
-        // Get movie poster path
-        String posterPath = mCursor.getString(MainActivity.INDEX_MOVIE_POSTER_PATH);
-        // Create complete movie poster path
+        cursor.moveToPosition(position);
+
+        // Gets movie poster path
+        String posterPath = cursor.getString(MainActivity.INDEX_MOVIE_POSTER_PATH);
+        // Creates complete movie poster path
         String completePosterPath = "http://image.tmdb.org/t/p/w342/" + posterPath;
-        // Load poster to the ImageView using Picasso
+        // Loads poster to the ImageView using Picasso
         Picasso.with(context)
                 .load(completePosterPath)
                 .fit()
@@ -68,13 +72,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     // Returns the number of items to display.
     @Override
     public int getItemCount() {
-        if (null == mCursor) return 0;
-        return mCursor.getCount();
+
+        // If the cursor is not null, returns 0
+        if (null == cursor) return 0;
+        // Otherwise, gets item count
+        return cursor.getCount();
     }
 
     // Used to refresh movie data
     void swapCursor(Cursor newCursor) {
-        mCursor = newCursor;
+        cursor = newCursor;
+        // Notifies that the data set changed,
+        // so that the data displayed would be updated
         notifyDataSetChanged();
     }
 
@@ -96,14 +105,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
             itemView.setOnClickListener(this);
         }
 
-        // When movie poster is clicked, get the movie id
-        // and send it to that movie's DetailActivity.
         @Override
         public void onClick(View v) {
+            // When a movie poster is clicked,
+            // Gets adapter position
             int adapterPosition = getAdapterPosition();
-            mCursor.moveToPosition(adapterPosition);
-            int movieId = mCursor.getInt(MainActivity.INDEX_MOVIE_ID);
-            mClickHandler.onClick(movieId);
+            // Moves to the data of the movie that was clicked on
+            cursor.moveToPosition(adapterPosition);
+            // Gets the movie id of the poster that was clicked
+            int movieId = cursor.getInt(MainActivity.INDEX_MOVIE_ID);
+            // Sends this movie ID to the movie's DetailActivity.
+            clickHandler.onClick(movieId);
         }
     }
 }

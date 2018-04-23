@@ -16,6 +16,7 @@ public class PoweredByActivity extends AppCompatActivity {
 
     @BindView(R.id.pb_loading_indicator)
     ProgressBar loadingIndicator;
+
     ObjectAnimator animation;
 
     @Override
@@ -31,9 +32,7 @@ public class PoweredByActivity extends AppCompatActivity {
         animation.setInterpolator(new DecelerateInterpolator());
         animation.addListener(addAnimatorListener());
         animation.start();
-
     }
-
 
     @Override
     protected void onPause() {
@@ -53,7 +52,8 @@ public class PoweredByActivity extends AppCompatActivity {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                Intent mainIntent = new Intent(PoweredByActivity.this, MainActivity.class);
+                Intent mainIntent =
+                        new Intent(PoweredByActivity.this, MainActivity.class);
                 PoweredByActivity.this.startActivity(mainIntent);
                 PoweredByActivity.this.finish();
                 overridePendingTransition(0, 0);

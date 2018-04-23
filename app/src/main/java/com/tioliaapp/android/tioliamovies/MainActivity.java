@@ -35,20 +35,29 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     // Indices of the values in the array of projection used in the loader
-    // below to more quickly be able to access the data from the query.
+    // below to be able to access the data from the query more quickly.
     public static final int INDEX_MOVIE_ID = 0;
     public static final int INDEX_MOVIE_POSTER_PATH = 1;
+
     private static final String TAG = MainActivity.class.getSimpleName();
+
     // The ID which will be used to identify the Loader responsible
     // for loading movie data in the MainActivity
     private static final int ID_MOVIE_DATA_LOADER = 44;
+
     // Boolean flag for preference updates
     private static boolean PREFERENCES_HAVE_BEEN_UPDATED = false;
+
+    // Finds RecyclerView
     @BindView(R.id.recyclerview_movie)
     RecyclerView recyclerView;
+    // Finds ProgressBar
     @BindView(R.id.pb_loading_indicator)
     ProgressBar loadingIndicator;
+
+    // Parcelable to save LayoutManager state
     Parcelable layoutManagerSavedState;
+
     private MovieAdapter movieAdapter;
 
     @Override
@@ -62,7 +71,7 @@ public class MainActivity extends AppCompatActivity
         int posterColumns = getResources().getInteger(R.integer.poster_columns);
         // Creates GridLayout with GridLayoutManager
         GridLayoutManager layoutManager = new GridLayoutManager(this, posterColumns);
-
+        // Sets LayoutManager
         recyclerView.setLayoutManager(layoutManager);
 
         // Improves performance if changes in content do not
@@ -76,6 +85,7 @@ public class MainActivity extends AppCompatActivity
         // Attaches the adapter to the RecyclerView in the layout.
         recyclerView.setAdapter(movieAdapter);
 
+        // Informs the user that data is being loaded
         showLoading();
 
         // Ensures a loader is initialized and active.
@@ -95,16 +105,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle bundle) {
 
+        Context context = getBaseContext();
+
         // The following two values depend on user's choice which movies to display
         // (popular, top rated or favourite movies)
         //
         // Uri that will be used to query tables
         Uri moviesQueryUri = null;
         // The columns of data that we are interested in displaying
-        // within our MainActivity's list of weather data.
+        // within our MainActivity's list of movie data.
         String[] mainMovieDataProjection = new String[0];
-
-        Context context = getBaseContext();
 
         // Gets the user's show movies preference key value which is used to decide
         // which movies to show (popular, top rated or favourite)
@@ -116,8 +126,9 @@ public class MainActivity extends AppCompatActivity
             // If it is ID_DETAIL_MOVIE_DATA_LOADER
             case ID_MOVIE_DATA_LOADER:
 
-                // Checks if the user selected popular or top rated movies
-                if (showMoviesValue.equals(context.getString(R.string.pref_show_movies_popular_value))) {
+                // Checks if the user selected popular, top rated or favourite movies
+                if (showMoviesValue.equals(context
+                        .getString(R.string.pref_show_movies_popular_value))) {
                     // User selected popular movies
                     // Creates uri for popular movies table
                     moviesQueryUri = PopularMovieEntry.CONTENT_URI;
@@ -127,7 +138,8 @@ public class MainActivity extends AppCompatActivity
                             PopularMovieEntry.COLUMN_MOVIE_POSTER_PATH,
                     };
 
-                } else if (showMoviesValue.equals(context.getString(R.string.pref_show_movies_top_rated_value))) {
+                } else if (showMoviesValue.equals(context
+                        .getString(R.string.pref_show_movies_top_rated_value))) {
 
                     // User selected top rated movies
                     // Creates uri for top rated movies table
@@ -143,6 +155,7 @@ public class MainActivity extends AppCompatActivity
                     // User selected favourite movies
                     // Creates uri for favourite movies table
                     moviesQueryUri = FavouriteMovieEntry.CONTENT_URI;
+                    // Creates projection for columns in the favourite movies table
                     mainMovieDataProjection = new String[]{
                             FavouriteMovieEntry.COLUMN_MOVIE_ID,
                             FavouriteMovieEntry.COLUMN_MOVIE_POSTER_PATH,
@@ -169,7 +182,7 @@ public class MainActivity extends AppCompatActivity
         movieAdapter.swapCursor(data);
         // Gets the position of the LayoutManager
         recyclerView.getLayoutManager().onRestoreInstanceState(layoutManagerSavedState);
-
+        // If cursor is not empty, shows movies
         if (data.getCount() != 0) showMovieDataView();
     }
 
@@ -198,7 +211,7 @@ public class MainActivity extends AppCompatActivity
         recyclerView.setVisibility(View.VISIBLE);
     }
 
-    // Hides the movie data invisible and makes the loading indicator visible
+    // Hides the movie data and makes the loading indicator visible
     private void showLoading() {
         // Firstly, makes sure the movie data is invisible
         recyclerView.setVisibility(View.INVISIBLE);
@@ -258,10 +271,10 @@ public class MainActivity extends AppCompatActivity
         PREFERENCES_HAVE_BEEN_UPDATED = true;
     }
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        // Saves the state of the LayoutManager
         outState.putParcelable("RecyclerViewLayoutManager",
                 recyclerView.getLayoutManager().onSaveInstanceState());
     }

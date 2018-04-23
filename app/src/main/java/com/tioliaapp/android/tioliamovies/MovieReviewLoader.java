@@ -3,8 +3,6 @@ package com.tioliaapp.android.tioliamovies;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
-import com.tioliaapp.android.tioliamovies.MovieVideoLoader;
-import com.tioliaapp.android.tioliamovies.Review;
 import com.tioliaapp.android.tioliamovies.utilities.MovieDbJsonUtils;
 import com.tioliaapp.android.tioliamovies.utilities.NetworkUtils;
 
@@ -37,6 +35,7 @@ public class MovieReviewLoader extends AsyncTaskLoader<List<Review>> {
     // This is on a background thread.
     @Override
     public List<Review> loadInBackground() {
+
         if (movieIdString == null) {
             return null;
         }
@@ -44,14 +43,12 @@ public class MovieReviewLoader extends AsyncTaskLoader<List<Review>> {
         // Performs the network request, parses the response, and extracts a list of movie reviews.
 
         // Builds url to query videos for the movie that is currently displayed
-        URL movieRequestUrl = NetworkUtils
-                .buildUrlForMovieReviews(movieIdString);
+        URL movieRequestUrl = NetworkUtils.buildUrlForMovieReviews(movieIdString);
 
         try {
             String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
 
-            List<Review> movieReviews = MovieDbJsonUtils
-                    .getMovieReviewsFromJson(jsonMovieResponse);
+            List<Review> movieReviews = MovieDbJsonUtils.getMovieReviewsFromJson(jsonMovieResponse);
 
             return movieReviews;
 

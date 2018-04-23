@@ -18,9 +18,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tioliaapp.android.tioliamovies.Review;
-import com.tioliaapp.android.tioliamovies.data.MovieContract.FavouriteMovieEntry;
 import com.squareup.picasso.Picasso;
+import com.tioliaapp.android.tioliamovies.data.MovieContract.FavouriteMovieEntry;
 
 import java.util.List;
 
@@ -33,13 +32,20 @@ import butterknife.ButterKnife;
 
 public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    // View types
     private final int VIEW_TYPE_MOVIE_DETAILS = 0;
     private final int VIEW_TYPE_MOVIE_VIDEOS = 1;
     private final int VIEW_TYPE_MOVIE_REVIEWS = 2;
+
     private final Context context;
+
+    // Boolean to track if the star button is checked or unchecked
     boolean starButtonIsChecked;
+
+    private Cursor cursor;
     private List<Video> videos;
     private List<Review> reviews;
+
     private int movieId;
     private String movieTitle;
     private String moviePosterPath;
@@ -47,7 +53,8 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private double movieRating;
     private String movieReleaseDate;
     private String movieOverview;
-    private Cursor mCursor;
+
+    // CoordinatorLayout for the SnackBar
     private final CoordinatorLayout coordinatorLayout;
 
     public DetailAdapter(@NonNull Context context, List<Video> videos, List<Review> reviews,
@@ -61,13 +68,23 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     // Returns view type based on the position
     @Override
     public int getItemViewType(int position) {
+
+        // If it is the first item in the RecyclerView
         if (position == 0) {
+
+            // Returns movie details view type
             return VIEW_TYPE_MOVIE_DETAILS;
-            // Also Check if videos is not null, because if it is null than
-            // the app crashes trying to get size of a null list
+
+            // If it is a second item or the item with the position number
+            // not higher than the size of the list of videos
         } else if (position > 0 && videos != null && position <= videos.size()) {
+
+            // Returns movie video view type
             return VIEW_TYPE_MOVIE_VIDEOS;
+
         } else {
+
+            // Otherwise, returns movie review view type
             return VIEW_TYPE_MOVIE_REVIEWS;
         }
     }
@@ -75,36 +92,56 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     // Inflates layouts according to view type
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        // Checks if it is movie details view type
         if (viewType == VIEW_TYPE_MOVIE_DETAILS) {
+            // Inflates movie details layout
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_item_movie_details, parent, false);
+            // Returns new ViewHolder for movie details
             return new ViewHolderMovieDetails(itemView);
+
+            // Checks if it is movie video view type
         } else if (viewType == VIEW_TYPE_MOVIE_VIDEOS) {
+            // Inflates movie video layout
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_item_movie_video, parent, false);
+            // Returns new ViewHolder for movie video
             return new ViewHolderVideo(itemView);
+
+            // Checks if it is movie review view type
         } else {
+            // Inflates movie review layout
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_item_movie_review, parent, false);
+            // Returns new ViewHolder for movie reviews
             return new ViewHolderReview(itemView);
         }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
         switch (holder.getItemViewType()) {
+
+            // If it is movie details view type
             case VIEW_TYPE_MOVIE_DETAILS:
+                // Binds ViewHolderMovieDetails views
                 ViewHolderMovieDetails viewHolderMovieDetails = (ViewHolderMovieDetails) holder;
                 viewHolderMovieDetails.bindViews(context);
                 break;
+
+            // If it is movie video view type
             case VIEW_TYPE_MOVIE_VIDEOS:
+                // Binds ViewHolderVideo views
                 ViewHolderVideo viewHolderVideo = (ViewHolderVideo) holder;
                 viewHolderVideo.bindViews(context, position - 1);
                 break;
+
+            // If it is movie review view type
             case VIEW_TYPE_MOVIE_REVIEWS:
-                // Check if videos is not null, because if it is null than
-                // the app crashes trying to get size of a null list
                 if (videos != null) {
+                    // Binds ViewHolderReview views
                     ViewHolderReview viewHolderReview = (ViewHolderReview) holder;
                     viewHolderReview.bindViews(position - 1 - videos.size());
                 }
@@ -126,27 +163,20 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public int getVideosCount() {
-        if (videos != null) {
-            return videos.size();
-        }
-        return 0;
-    }
-
-    // Used to refresh movie videos
+    // Refreshes movie videos
     public void setMovieVideos(List<Video> videos) {
         this.videos = videos;
         notifyDataSetChanged();
     }
 
-    // Used to refresh movie reviews
+    // Refreshes movie reviews
     public void setMovieReviews(List<Review> reviews) {
         this.reviews = reviews;
         notifyDataSetChanged();
     }
 
     // Inserts a movie to the favourite movies tale
-    public void addMovieToFavouritesTable(Context context) {
+    private void addMovieToFavouritesTable(Context context) {
 
         // Create new empty ContentValues object
         ContentValues contentValues = new ContentValues();
@@ -161,12 +191,12 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         contentValues.put(FavouriteMovieEntry.COLUMN_MOVIE_RELEASE_DATE, movieReleaseDate);
 
         // Inserts the content values via the ContentResolver
-        Uri uri = context.getContentResolver()
+        context.getContentResolver()
                 .insert(FavouriteMovieEntry.CONTENT_URI, contentValues);
     }
 
     // Deletes a movie from the favourite movies tale
-    public void deleteMovieFromFavoritesTable(Context context) {
+    private void deleteMovieFromFavoritesTable(Context context) {
 
         // Gets the uri to access favourite movies table
         Uri uri = FavouriteMovieEntry.CONTENT_URI;
@@ -177,12 +207,12 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         String[] selectionArgs = new String[]{movieIdString};
 
         // Delete a single row of data using a ContentResolver
-        int rowsDeleted = context.getContentResolver().delete(uri, selection, selectionArgs);
+        context.getContentResolver().delete(uri, selection, selectionArgs);
     }
 
-    // Used to refresh movies
+    // Refreshes movies
     void swapCursor(Cursor newCursor) {
-        mCursor = newCursor;
+        cursor = newCursor;
         notifyDataSetChanged();
     }
 
@@ -214,17 +244,22 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         // Binds views in with data
         public void bindViews(final Context context) {
-            if (mCursor != null && mCursor.getCount() != 0) {
-                mCursor.moveToFirst();
 
-                // Shows the movie title
-                movieTitle = mCursor.getString(DetailActivity.INDEX_MOVIE_TITLE);
+            // Checks if cursor is not null and is not empty
+            if (cursor != null && cursor.getCount() != 0) {
+
+                cursor.moveToFirst();
+
+                // Displays the movie title
+                movieTitle = cursor.getString(DetailActivity.INDEX_MOVIE_TITLE);
                 movieTitleTextView.setText(movieTitle);
 
                 // Gets movie poster path and appends it to base uri
-                moviePosterPath = mCursor.getString(DetailActivity.INDEX_MOVIE_POSTER_PATH);
-                String completeMoviePosterPath = "http://image.tmdb.org/t/p/w342/" + moviePosterPath;
-                // Shows the movie poster
+                moviePosterPath = cursor.getString(DetailActivity.INDEX_MOVIE_POSTER_PATH);
+                String completeMoviePosterPath =
+                        "http://image.tmdb.org/t/p/w342/" + moviePosterPath;
+
+                // Displays the movie poster
                 Picasso.with(context)
                         .load(completeMoviePosterPath)
                         .fit()
@@ -238,29 +273,24 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                 // Gets and stores backdrop path to have all information related to a movie,
                 // if the user later wants to add the movie to their favourites
-                backdropPath = mCursor.getString(DetailActivity.INDEX_MOVIE_BACKDROP_PATH);
+                backdropPath = cursor.getString(DetailActivity.INDEX_MOVIE_BACKDROP_PATH);
 
-                // Gets movie release date and formats string so that it would show only release years
-                movieReleaseDate = mCursor.getString(DetailActivity.INDEX_MOVIE_RELEASE_DATE);
+                // Gets movie release date and formats string
+                // so that it would show only release years
+                movieReleaseDate = cursor.getString(DetailActivity.INDEX_MOVIE_RELEASE_DATE);
                 String formattedMovieReleaseDate = movieReleaseDate.substring(0, 4);
-                // Shows the movie release date
+                // Displays the movie release date
                 movieReleaseDateTextView.setText(formattedMovieReleaseDate);
 
-                // Gets movie vote average (rating) and format so that
-                // it would show how many points from 10 the movie has
-                movieRating = mCursor.getDouble(DetailActivity.INDEX_MOVIE_RATING);
+                // Gets movie vote average (rating) and formats so that
+                // it would display how many points from 10 the movie has
+                movieRating = cursor.getDouble(DetailActivity.INDEX_MOVIE_RATING);
                 String movieRatingString = String.valueOf(movieRating) + "/10";
                 movieRatingTextView.setText(movieRatingString);
 
-                // Show the movie review
-                movieOverview = mCursor.getString(DetailActivity.INDEX_MOVIE_OVERVIEW);
+                // Displays the movie review
+                movieOverview = cursor.getString(DetailActivity.INDEX_MOVIE_OVERVIEW);
                 movieOverviewTextView.setText(movieOverview);
-
-                // Queries favourite movies table on the background thread that
-                // the Popular Movies app would know if the star button should be checked
-                // or unchecked when the user opens DetailActivity.
-                // It also checks the star button on the main thread,
-                // if the movie is in the favourite movies table
 
                 // Uri to query favourite movies table
                 Uri moviesQueryUri = FavouriteMovieEntry.CONTENT_URI;
@@ -273,8 +303,7 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 };
 
                 // Gets the id of the movie that is currently displayed
-                movieId = mCursor.getInt(DetailActivity.INDEX_MOVIE_ID);
-
+                movieId = cursor.getInt(DetailActivity.INDEX_MOVIE_ID);
                 // Converts movie id into a string
                 String movieIdString = String.valueOf(movieId);
 
@@ -284,6 +313,9 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 String[] selectionArgs = new String[]{movieIdString};
 
                 // Performs the query
+                // Queries favourite movies table that the Popular Movies app would know if the
+                // star button should be checked or unchecked when the user opens DetailActivity.
+                // It also checks the star button, if the movie is in the favourite movies table
                 Cursor favouriteMoviesCursor = context.getContentResolver().query(
                         moviesQueryUri,
                         detailMovieDataProjection,
@@ -296,14 +328,16 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 // Checks if the cursor is null or empty
                 if (null != favouriteMoviesCursor
                         && favouriteMoviesCursor.getCount() != 0) {
+
                     // If it is not null or empty, moves cursor to the first row
                     favouriteMoviesCursor.moveToFirst();
+
                     // Gets the index of the COLUMN_MOVIE_ID of the favourite movies table
                     int movieIdColumnIndex = favouriteMoviesCursor
                             .getColumnIndex(FavouriteMovieEntry.COLUMN_MOVIE_ID);
+
                     // Gets the movie id
                     int movieIdFromFavouritesTable = favouriteMoviesCursor.getInt(movieIdColumnIndex);
-
 
                     // Once more checks that the movie ID from the cursor is equal
                     // to the ID of the movie that is currently displayed
@@ -316,22 +350,24 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
 
                 if (isMovieIdInFavouritesTable) {
-                    // If true was returned, check star button
-                    starButton.setImageDrawable(ContextCompat.getDrawable(context,
-                            android.R.drawable.btn_star_big_on));
+                    // If true, checks star button
+                    starButton.setImageDrawable(ContextCompat
+                            .getDrawable(context, android.R.drawable.btn_star_big_on));
                     // Set starButtonIsChecked to true to follow if
-                    // the star button id checked or unchecked
+                    // the star button is checked or unchecked
                     starButtonIsChecked = true;
                 }
 
                 // Sets on OnClickListener on the star button
                 starButton.setOnClickListener(new Button.OnClickListener() {
                     public void onClick(View v) {
+
                         // If star button is unchecked
                         if (!starButtonIsChecked) {
+
                             // Sets checked star drawable
-                            starButton.setImageDrawable(ContextCompat.getDrawable(context,
-                                    android.R.drawable.btn_star_big_on));
+                            starButton.setImageDrawable(ContextCompat
+                                    .getDrawable(context, android.R.drawable.btn_star_big_on));
                             // Saves the movie to the favorites table
                             addMovieToFavouritesTable(context);
                             // Sets starButtonIsChecked variable to true (star button is checked)
@@ -360,12 +396,15 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             snackbar.show();
                                         }
                                     });
+
                             snackbar.show();
+
                             // If star button is checked
                         } else {
+
                             // Sets unchecked star drawable
-                            starButton.setImageDrawable(ContextCompat.getDrawable(context,
-                                    android.R.drawable.btn_star_big_off));
+                            starButton.setImageDrawable(ContextCompat
+                                    .getDrawable(context, android.R.drawable.btn_star_big_off));
                             // Deletes the movie from the favorites table
                             deleteMovieFromFavoritesTable(context);
                             // Sets starButtonIsChecked variable to false (star button is unchecked)
@@ -394,12 +433,11 @@ public class DetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             snackbar.show();
                                         }
                                     });
+
                             snackbar.show();
                         }
                     }
                 });
-
-
             }
         }
     }

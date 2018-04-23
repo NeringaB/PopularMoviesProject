@@ -5,7 +5,6 @@ import android.content.Context;
 
 import com.tioliaapp.android.tioliamovies.utilities.MovieDbJsonUtils;
 import com.tioliaapp.android.tioliamovies.utilities.NetworkUtils;
-import com.tioliaapp.android.tioliamovies.Video;
 
 import java.net.URL;
 import java.util.List;
@@ -43,14 +42,12 @@ public class MovieVideoLoader extends AsyncTaskLoader<List<Video>> {
         // Performs the network request, parses the response, and extracts a list of movie videos.
 
         // Builds url to query videos for the movie that is currently displayed
-        URL movieRequestUrl = NetworkUtils
-                .buildUrlForMovieVideos(movieIdString);
+        URL movieRequestUrl = NetworkUtils.buildUrlForMovieVideos(movieIdString);
 
         try {
             String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(movieRequestUrl);
 
-            List<Video> movieVideos = MovieDbJsonUtils
-                    .getMovieVideosFromJson(jsonMovieResponse);
+            List<Video> movieVideos = MovieDbJsonUtils.getMovieVideosFromJson(jsonMovieResponse);
 
             return movieVideos;
 

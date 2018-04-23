@@ -25,8 +25,10 @@ public class MovieDataSyncUtils {
     private static final int SYNC_INTERVAL_SECONDS =
             (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
     private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
-    //  Sync tag to identify our sync job
+
+    // Sync tag to identify our sync job
     private static final String MOVIE_DATA_SYNC_TAG = "movie-data-sync";
+
     // Helps to track if initialization has been performed or not
     private static boolean initialized;
 
@@ -76,7 +78,7 @@ public class MovieDataSyncUtils {
         scheduleFirebaseJobDispatcherSync(context);
 
         // Checks if the ContentProvider has data to display. Creates a thread in which
-        // the query will be run to check the contents of our ContentProvider.
+        // the query will be run to check the contents of the ContentProvider.
         Thread checkForEmpty = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -86,11 +88,12 @@ public class MovieDataSyncUtils {
                 Uri topRatedMoviesQueryUri = TopRatedMovieEntry.CONTENT_URI;
 
                 // Since this query is going to be used only as a check to see
-                // if we have any data, only ID of each row should be projected
+                // if any data exists, only ID of each row should be projected
                 String[] popularMoviesProjectionColumns = {PopularMovieEntry._ID};
                 String[] topRatedMoviesProjectionColumns = {TopRatedMovieEntry._ID};
 
-                // Performs the query to check if popular movies table has any popular movie data
+                // Performs the query to check if popular
+                // movies table has any popular movie data
                 Cursor popularMoviesCursor = context.getContentResolver().query(
                         popularMoviesQueryUri,
                         popularMoviesProjectionColumns,
@@ -120,7 +123,7 @@ public class MovieDataSyncUtils {
             }
         });
 
-        // nce the thread is prepared, fire it off to perform our checks. */
+        // Once the thread is prepared, fire it off to perform checks. */
         checkForEmpty.start();
     }
 

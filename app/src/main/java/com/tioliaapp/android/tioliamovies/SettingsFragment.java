@@ -29,12 +29,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
         // Goes through all of the preferences, and sets up their preference summary.
         for (int i = 0; i < count; i++) {
-            Preference p = prefScreen.getPreference(i);
+            Preference preference = prefScreen.getPreference(i);
             // There is no need to set up preference summaries for checkbox preferences
             // because they are already set up in xml using summaryOff and summaryOn
-            if (!(p instanceof CheckBoxPreference)) {
-                String value = sharedPreferences.getString(p.getKey(), "");
-                setPreferenceSummary(p, value);
+            if (!(preference instanceof CheckBoxPreference)) {
+                String value = sharedPreferences.getString(preference.getKey(), "");
+                setPreferenceSummary(preference, value);
             }
         }
     }
